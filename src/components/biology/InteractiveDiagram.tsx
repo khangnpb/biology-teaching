@@ -47,46 +47,29 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
   const activeDisplay = hoveredHotspot || selectedHotspot;
 
   return (
-    <div className="glass-card" style={{ padding: '24px', margin: '24px 0', overflow: 'hidden' }}>
+    <div className="clean-card mobile-padding-sm" style={{ padding: '24px', margin: '24px 0', overflow: 'hidden' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <div className="badge badge-cyan" style={{ marginBottom: '6px' }}>
+          <span className="btn-clean" style={{ marginBottom: '6px', fontSize: '0.75rem', padding: '2px 8px' }}>
             <Sparkles size={14} /> Sơ Đồ Tương Tác 2D
-          </div>
+          </span>
           <h3 style={{ fontSize: '1.25rem' }}>{diagram.title}</h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{diagram.description}</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{diagram.description}</p>
         </div>
 
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => { setQuizMode(false); setQuizMessage(null); }}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              background: !quizMode ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255,255,255,0.05)',
-              color: !quizMode ? 'var(--accent-cyan)' : 'var(--text-muted)',
-              border: `1px solid ${!quizMode ? 'var(--accent-cyan)' : 'var(--border-subtle)'}`
-            }}
+            className={`btn-clean ${!quizMode ? 'btn-clean-active' : ''}`}
+            style={{ fontSize: '0.8rem', padding: '6px 12px' }}
           >
             Khám phá
           </button>
           <button
             onClick={startQuizMode}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              background: quizMode ? 'rgba(139, 92, 246, 0.25)' : 'rgba(255,255,255,0.05)',
-              color: quizMode ? 'var(--accent-purple)' : 'var(--text-muted)',
-              border: `1px solid ${quizMode ? 'var(--accent-purple)' : 'var(--border-subtle)'}`,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+            className={`btn-clean ${quizMode ? 'btn-clean-active' : ''}`}
+            style={{ fontSize: '0.8rem', padding: '6px 12px' }}
           >
             <HelpCircle size={14} /> Thử thách vị trí
           </button>
@@ -96,11 +79,11 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
       {quizMode && quizTarget && (
         <div style={{
           padding: '12px 16px',
-          borderRadius: '12px',
-          background: 'rgba(139, 92, 246, 0.15)',
-          border: '1px solid rgba(139, 92, 246, 0.3)',
+          borderRadius: 'var(--radius-md)',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-main)',
           marginBottom: '16px',
-          fontSize: '0.95rem'
+          fontSize: '0.9rem'
         }}>
           🎯 <strong>Nhiệm vụ:</strong> Hãy bấm vào vị trí của <strong>{quizTarget.name}</strong> trên sơ đồ!
           {quizMessage && (
@@ -112,14 +95,14 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
       )}
 
       {/* Main Interactive Diagram Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 1fr) minmax(260px, 340px)', gap: '24px' }}>
+      <div className="grid-diagram">
         {/* SVG Canvas Container */}
         <div 
           style={{
             position: 'relative',
-            background: 'radial-gradient(circle at center, #0f172a 0%, #080d19 100%)',
-            borderRadius: '16px',
-            border: '1px solid var(--border-subtle)',
+            background: 'var(--bg-surface)',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-main)',
             aspectRatio: '4/3',
             display: 'flex',
             alignItems: 'center',
@@ -127,16 +110,8 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
             overflow: 'hidden'
           }}
         >
-          {/* Custom SVG Renderings for Cell & DNA */}
           {diagram.type === 'cell' ? (
             <svg viewBox="0 0 400 300" style={{ width: '100%', height: '100%' }}>
-              <defs>
-                <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-
               {/* Cell Outer Membrane */}
               <ellipse 
                 cx="200" cy="150" rx="170" ry="120" 
@@ -144,8 +119,6 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
                 stroke={hoveredHotspot?.id === 'membrane' || selectedHotspot?.id === 'membrane' ? '#06b6d4' : '#1e3a5f'} 
                 strokeWidth={hoveredHotspot?.id === 'membrane' || selectedHotspot?.id === 'membrane' ? "5" : "3"} 
               />
-
-              {/* Cytoplasm texture */}
               <ellipse cx="200" cy="150" rx="160" ry="110" fill="rgba(6, 182, 212, 0.05)" />
 
               {/* Chloroplast */}
@@ -171,7 +144,6 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
               <g onClick={() => handleSelect(diagram.hotspots.find(h => h.id === 'nucleus')!)} style={{ cursor: 'pointer' }}>
                 <circle cx="200" cy="144" r="45" fill="#581c87" stroke="#a855f7" strokeWidth="3" />
                 <circle cx="200" cy="144" r="18" fill="#3b0764" stroke="#c084fc" strokeWidth="2" />
-                {/* Chromatin dots */}
                 <circle cx="190" cy="135" r="2" fill="#e9d5ff" />
                 <circle cx="210" cy="150" r="3" fill="#e9d5ff" />
               </g>
@@ -211,7 +183,6 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
                       stroke={hotspot.color || 'var(--accent-cyan)'} 
                       strokeWidth="1.5" 
                       strokeDasharray="3 3"
-                      className="animate-pulse-subtle"
                     />
                     {isExplored && (
                       <text x="0" y="3.5" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">✓</text>
@@ -225,12 +196,10 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
             <svg viewBox="0 0 400 300" style={{ width: '100%', height: '100%' }}>
               <path d="M 100 50 Q 200 150 300 50 T 100 250" fill="none" stroke="#06b6d4" strokeWidth="4" />
               <path d="M 100 150 Q 200 50 300 150 T 100 250" fill="none" stroke="#3b82f6" strokeWidth="4" />
-              {/* Base pair rungs */}
               <line x1="140" y1="90" x2="140" y2="135" stroke="#fbbf24" strokeWidth="3" />
               <line x1="200" y1="140" x2="200" y2="100" stroke="#10b981" strokeWidth="3" />
               <line x1="260" y1="90" x2="260" y2="135" stroke="#ec4899" strokeWidth="3" />
 
-              {/* Hotspot Markers */}
               {diagram.hotspots.map((hotspot) => (
                 <g 
                   key={hotspot.id} 
@@ -252,10 +221,10 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          background: 'rgba(15, 23, 42, 0.6)',
-          borderRadius: '16px',
+          background: 'var(--bg-surface)',
+          borderRadius: 'var(--radius-md)',
           padding: '20px',
-          border: '1px solid var(--border-subtle)'
+          border: '1px solid var(--border-main)'
         }}>
           {activeDisplay ? (
             <div>
@@ -264,35 +233,35 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
                   width: '12px',
                   height: '12px',
                   borderRadius: '50%',
-                  backgroundColor: activeDisplay.color || 'var(--accent-cyan)'
+                  backgroundColor: activeDisplay.color || 'var(--text-main)'
                 }} />
-                <h4 style={{ fontSize: '1.15rem', color: '#fff' }}>{activeDisplay.name}</h4>
+                <h4 style={{ fontSize: '1.15rem', color: 'var(--text-main)' }}>{activeDisplay.name}</h4>
               </div>
 
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '16px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '0.88rem', color: 'var(--text-main)', marginBottom: '16px', lineHeight: 1.5 }}>
                 {activeDisplay.description}
               </div>
 
               <div style={{
                 padding: '12px',
-                borderRadius: '10px',
-                background: 'rgba(6, 182, 212, 0.1)',
-                border: '1px solid rgba(6, 182, 212, 0.2)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-main)',
                 marginBottom: '12px',
-                fontSize: '0.85rem'
+                fontSize: '0.82rem'
               }}>
-                <strong style={{ color: 'var(--accent-cyan)', display: 'block', marginBottom: '4px' }}>⚡ Chức năng sinh học:</strong>
+                <strong style={{ color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>⚡ Chức năng sinh học:</strong>
                 {activeDisplay.function}
               </div>
 
               <div style={{
                 padding: '12px',
-                borderRadius: '10px',
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.2)',
-                fontSize: '0.85rem'
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-main)',
+                fontSize: '0.82rem'
               }}>
-                <strong style={{ color: 'var(--accent-amber)', display: 'block', marginBottom: '4px' }}>💡 Ý nghĩa quan trọng:</strong>
+                <strong style={{ color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>💡 Ý nghĩa quan trọng:</strong>
                 {activeDisplay.importance}
               </div>
             </div>
@@ -307,7 +276,7 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
           <div style={{
             marginTop: '16px',
             paddingTop: '12px',
-            borderTop: '1px solid var(--border-subtle)',
+            borderTop: '1px solid var(--border-main)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -316,7 +285,7 @@ export const InteractiveDiagram: React.FC<InteractiveDiagramProps> = ({
           }}>
             <span>Đã khám phá: {exploredIds.size}/{diagram.hotspots.length} bào quan</span>
             {exploredIds.size === diagram.hotspots.length && (
-              <span style={{ color: 'var(--accent-emerald)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ color: 'var(--text-main)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <CheckCircle size={14} /> Hoàn thành sơ đồ
               </span>
             )}

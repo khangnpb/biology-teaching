@@ -143,7 +143,7 @@ const GLBCanvasView: React.FC<RenderCanvasProps> = ({
 
     renderer.domElement.addEventListener('click', handleCanvasClick);
 
-    // Mouse Orbit Controls
+    // Mouse & Touch Orbit Controls for Mobile
     let isDragging = false;
     let prevMousePos = { x: 0, y: 0 };
 
@@ -165,9 +165,34 @@ const GLBCanvasView: React.FC<RenderCanvasProps> = ({
 
     const handleMouseUp = () => { isDragging = false; };
 
+    // Touch events for mobile phones
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        prevMousePos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging || !modelGroup || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - prevMousePos.x;
+      const dy = e.touches[0].clientY - prevMousePos.y;
+
+      modelGroup.rotation.y += dx * 0.01;
+      modelGroup.rotation.x += dy * 0.01;
+
+      prevMousePos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    };
+
+    const handleTouchEnd = () => { isDragging = false; };
+
     renderer.domElement.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+
+    renderer.domElement.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
 
     // Animation Loop
     let animId: number;
@@ -184,9 +209,12 @@ const GLBCanvasView: React.FC<RenderCanvasProps> = ({
       cancelAnimationFrame(animId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       if (renderer.domElement) {
         renderer.domElement.removeEventListener('click', handleCanvasClick);
         renderer.domElement.removeEventListener('mousedown', handleMouseDown);
+        renderer.domElement.removeEventListener('touchstart', handleTouchStart);
         renderer.dispose();
       }
       if (mountRef.current) {
@@ -252,7 +280,7 @@ export const Cell3DStudio: React.FC = () => {
   const activeOrganelle = activeModel.organelles.find(o => o.id === activeOrganelleId) || activeModel.organelles[0];
 
   return (
-    <div className="clean-card" style={{ padding: '24px', margin: '20px 0' }}>
+    <div className="clean-card mobile-padding-sm" style={{ padding: '24px', margin: '20px 0' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
         <h2 style={{ fontSize: '1.4rem', margin: 0 }}>Mô Hình 3D</h2>
@@ -274,7 +302,7 @@ export const Cell3DStudio: React.FC = () => {
       {/* Model Selection Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
         gap: '12px',
         marginBottom: '20px'
       }}>
@@ -302,8 +330,8 @@ export const Cell3DStudio: React.FC = () => {
                 src={model.previewImage}
                 alt={model.name}
                 style={{
-                  width: '56px',
-                  height: '56px',
+                  width: '48px',
+                  height: '48px',
                   borderRadius: 'var(--radius-sm)',
                   objectFit: 'cover',
                   border: '1px solid var(--border-main)'
@@ -314,7 +342,7 @@ export const Cell3DStudio: React.FC = () => {
                 <span className="btn-clean" style={{ padding: '2px 6px', fontSize: '0.65rem', marginBottom: '2px' }}>
                   {model.category.split(' ')[0]}
                 </span>
-                <h4 style={{ fontSize: '0.9rem', color: 'var(--text-main)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-main)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {model.name}
                 </h4>
               </div>
@@ -323,11 +351,10 @@ export const Cell3DStudio: React.FC = () => {
         })}
       </div>
 
-      {/* 3D View & Inspector Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '20px' }}>
+      {/* 3D View & Inspector Responsive Grid */}
+      <div className="grid-3d-studio">
         {/* Three.js GLB Canvas Container */}
-        <div style={{
-          height: '460px',
+        <div className="canvas-container-responsive" style={{
           borderRadius: 'var(--radius-md)',
           overflow: 'hidden',
           border: '1px solid var(--border-main)',
@@ -358,7 +385,7 @@ export const Cell3DStudio: React.FC = () => {
               </span>
             </div>
 
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{activeModel.name}</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>{activeModel.name}</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '16px', lineHeight: 1.5 }}>
               {activeModel.description}
             </p>

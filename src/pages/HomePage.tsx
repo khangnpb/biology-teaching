@@ -15,15 +15,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   return (
     <div>
       {/* Hero Section */}
-      <section style={{ padding: '60px 0 50px 0' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px', alignItems: 'center' }}>
+      <section style={{ padding: '40px 0 30px 0' }}>
+        <div className="container grid-hero">
           <div>
             <span className="btn-clean" style={{ marginBottom: '16px', fontSize: '0.8rem' }}>
               🔬 Nền Tảng Học Sinh Học Tương Tác 3D
             </span>
 
-            <h1 style={{ fontSize: '3.0rem', lineHeight: 1.15, marginBottom: '20px' }}>
-              Khám Phá Cấu Trúc Sinh Học Quan Trực Quan.<br />
+            <h1 style={{ fontSize: '2.8rem', lineHeight: 1.2, marginBottom: '20px' }}>
+              Khám Phá Cấu Trúc Sinh Học Tương Tác.<br />
               Đơn Giản & Trực Quan.
             </h1>
 
@@ -64,7 +64,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               background: 'var(--bg-surface)'
             }}
           >
-            <div style={{ fontSize: '5rem', marginBottom: '12px' }}>🧫</div>
+            <div style={{ fontSize: '4.5rem', marginBottom: '12px' }}>🧫</div>
             <h3 style={{ fontSize: '1.3rem', marginBottom: '8px' }}>Mô Hình 3D Tế Bào</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
               Bao gồm 8+ mô hình 3D: Tế bào Động vật, Thực vật, Vi khuẩn, Ti thể, Lục thể, ADN & Virus.
@@ -82,13 +82,13 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* Featured Books Section */}
-      <section style={{ padding: '40px 0' }}>
+      <section style={{ padding: '30px 0' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h2 style={{ fontSize: '2.0rem', marginBottom: '8px' }}>Tài Liệu Sách Giáo Khoa (PDF)</h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {BOOKS_DATA.map((book) => (
               <div
                 key={book.id}

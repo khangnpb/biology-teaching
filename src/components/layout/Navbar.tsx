@@ -36,40 +36,51 @@ export const Navbar: React.FC<NavbarProps> = ({
       borderBottom: '1px solid var(--border-main)',
       transition: 'var(--transition)'
     }}>
-      <div className="container" style={{
+      <div className="container navbar-container" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         height: '64px'
       }}>
-        {/* Brand Title */}
-        <div
-          onClick={() => setActiveTab('home')}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-        >
-          <img 
-            src="/logo.png" 
-            alt="BioLab 3D Logo" 
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              objectFit: 'cover',
-              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
-            }} 
-          />
-          <div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>
-              BioLab <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>3D</span>
-            </span>
-            <span style={{ fontSize: '0.65rem', display: 'block', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '-4px' }}>
-              Digital Textbook
-            </span>
+        {/* Top bar on Mobile / Brand title */}
+        <div className="navbar-top-bar">
+          <div
+            onClick={() => setActiveTab('home')}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+          >
+            <img 
+              src="/logo.png" 
+              alt="BioLab 3D Logo" 
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                objectFit: 'cover',
+                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+              }} 
+            />
+            <div>
+              <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                BioLab <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>3D</span>
+              </span>
+              <span style={{ fontSize: '0.65rem', display: 'block', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: '-4px' }}>
+                Digital Textbook
+              </span>
+            </div>
           </div>
+
+          <button
+            onClick={onToggleTheme}
+            className="btn-clean"
+            style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+            title="Chuyển chế độ Sáng / Tối"
+          >
+            {theme === 'dark' ? '☀️ Ban ngày' : '🌙 Ban đêm'}
+          </button>
         </div>
 
-        {/* Clean Monochrome Nav Tabs */}
-        <nav style={{ display: 'flex', gap: '4px' }}>
+        {/* Scrollable Nav Tabs on Mobile */}
+        <nav className="nav-scroll-mobile">
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id || (item.id === 'books' && (activeTab === 'lesson' || activeTab === 'chapter'));
 
@@ -85,18 +96,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             );
           })}
         </nav>
-
-        {/* Day / Night Theme Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button
-            onClick={onToggleTheme}
-            className="btn-clean"
-            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-            title="Chuyển chế độ Sáng (Ban ngày) / Tối (Ban đêm)"
-          >
-            {theme === 'dark' ? '☀️ Ban ngày' : '🌙 Ban đêm'}
-          </button>
-        </div>
       </div>
     </header>
   );
